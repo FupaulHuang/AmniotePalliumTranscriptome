@@ -1,12 +1,3 @@
-
-# **********************************************************
-# * Author        : HuangFubaoqian
-# * Email         : huangbaoqian@genomics.cn
-# * Create time   : 2022-05-17 14:10
-# * Filename      : rm_doublet.R
-# * Description   : 
-# **********************************************************
-
 library(DoubletFinder)
 library(Seurat)
 library(dplyr)

@@ -1,12 +1,3 @@
-
-# **********************************************************
-# * Author        : HuangFubaoqian
-# * Email         : huangbaoqian@genomics.cn
-# * Create time   : 2022-05-20 12:37
-# * Filename      : function_integ.R
-# * Description   : 
-# **********************************************************
-
 library(Seurat)
 library(dplyr)
 library(ggplot2)

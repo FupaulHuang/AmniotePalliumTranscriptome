@@ -1,14 +1,6 @@
-
-# **********************************************************
-# * Author        : HuangFubaoqian
-# * Email         : huangbaoqian@genomics.cn
-# * Create time   : 2023-07-12 17:19
-# * Filename      : record.R
-# * Description   : 
-# **********************************************************
-source("/data/work/function_scripts//function_merge.R")
-source('/data/work/function_scripts//function_integ.R')
-source('/data/work/revision/14.revision/03.expression/function_heatmap.R')
+source("functions/function_merge.R")
+source('functions//function_integ.R')
+source('functions/function_heatmap.R')
 library(stringr)
 library(data.table)
 library(tidyverse)
