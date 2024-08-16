@@ -77,6 +77,113 @@ rat <- cal_wvsh(all)
 cor <- cor[-5]
 dimplot_out(all,label='fig1b',group1='predict_Celltype',group2='Celltype',wei=10*rat,hei=10,corl=cor,pt.size=1)
 
+#Plot marker FeaturesPlot
 gene=c('SLC17A7','GAD1')
 pmarkers(all,gene)
 
+#Plot heatmap
+source('functions/function_heatmap.R')
+all=readRDS('all_anno_20240717.rds')
+ave=readRDS('ave.rds')
+lsub=c('IN','EX','AST','OLI', 'OPC','MIC','PERI','ENDO','VLMC','MUR','NPC','EPEN','EG')
+lgene <- c('GAD1','GAD2','SLC17A7','SLC17A6', 'SLIT3','SLC1A2','SLC1A3','GFAP',
+           #'MOG','OPALIN','OLIG1', 
+           'MBP','PLP1','BCAS1','SOX6',
+           'PDGFRA',
+           'PCDH15','APBB1IP',
+           #'CTSS',
+           'PTPRC','C1QB',
+           'C1QC','PDGFRB','KCNJ8',
+           'FLT1','CLDN5',
+           'DCN','COL1A2','COL1A1',
+           'LUM','SOX11','SOX4',
+           #'SPEF2',
+           'MKI67','TOP2A',
+           'FOXJ1',
+           'SOX9')
+meta$Sub <- factor(meta$Sub,levels=lsub)
+meta <- dplyr::arrange(meta,Sub,order)
+meta$ingroup <- paste0(meta$Sub,' ',meta$order)
+lorder <- unique(meta$ingroup)
+meta=all@meta.data
+group1 <- 'Sub'
+group2 <- 'order'
+obj <- all
+col1= col
+col2= pal_simpsons("springfield")(16)
+col1 <- col1[1:length(unique(obj@meta.data[,group1]))]
+names(col1) <-unique(obj@meta.data[,group1])
+col2 <- col2[1:length(unique(obj@meta.data[,group2]))]
+names(col2) <- unique(obj@meta.data[,group2])
+ann_colors<- list(group1 = col1, group2= col2)
+names(ann_colors) <- c(group1,group2)
+obj_heatmap(obj=all,group1='Sub',group2='order',lgene=lgene,pf='markers_heatmap.pdf',
+                        inassay='RNA',insep=' ',ann_colors=ann_colors,anno_col=NULL,incolor=c('white','lightgrey','black'),
+                        widsize=NULL,heisize=NULL,lorder=lorder,scale='row',inave=NULL)
+
+#Plot markers volin plot
+plot_vlnplot <- function(ob1,gene,ingroup='seurat_clusters',inlabel='out',inassay='RNA',slot = "data",corl=c(brewer.pal(8, "Dark2"),brewer.pal(12, "Paired"),brewer.pal(8, "Set2"),brewer.pal(9, "Set1"),colpalettes,rainbow(20))){
+    DefaultAssay(ob1) <- 'RNA'
+    gene=unique(gene)
+    #blu<-colorRampPalette(brewer.pal(9,"Blues"))(100)
+    p1=VlnPlot(ob1,features = gene,group.by=ingroup,stack = T,flip =T,fill.by ='ident',slot = slot)+
+            scale_fill_manual(values=corl)+
+            theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))+
+            NoLegend()+
+            ggtitle(inlabel)
+
+    inwid=length(unique(ob1@meta.data[,ingroup]))*28/100
+    inlen=max(c(19*length(gene),884))/100
+    pdf(paste0(inlabel,'_markers_vlnplot.pdf'),inwid,inlen)
+    print(p1)
+    dev.off()
+}
+
+markers <- read.csv(header = T, text = '
+celltype,marker
+L1/2_IT,SLC17A7
+L1/2_IT,GPR83
+L1/2_IT,PDZD2
+L1/2_IT,NTNG1
+L3/4_IT,MYLK
+L3/4_IT,PLCH1
+L3/4_IT,RORB
+L3/4_IT,IL1RAPL2
+L3/4_IT,OPRK1
+L3/4_IT,SMYD1
+L3/4_IT,ETV1
+L5/6 IT Car3,TLE4
+L5/6 NP,NXPH2
+L5 ET,FEZF2
+L5 ET,ABO
+L6b,HCRTR2
+L6b,SEMA3E
+L6b,AMOTL1
+LAMP5,GAD1
+LAMP5,GAD2
+LAMP5,RELN
+LAMP5,ADARB2
+LAMP5,EYA4
+LAMP5,GAD1
+LAMP5,LAMP5
+PAX6,PAX6
+PVALB,PVALB
+SST,SST
+VIP,CALB2
+VIP,VIP
+Astrocyte,GFAP
+Astrocyte,SLC1A2
+Astrocyte,SLC1A3
+Oligodendrocyte,MOG
+Oligodendrocyte,PLP1
+OPC,PDGFRA
+OPC,COL9A1
+Microglia,APBB1IP
+Microglia,PTPRC
+Endothelial,FLT1
+Endothelial,RGS5
+Endothelial,COL1A2
+Endothelial,PDGFRB
+')
+all=readRDS('/data/work/graduation/09.summary/06.pfc/macaca_pfc_20230215_diet.rds')
+plot_vlnplot(all,markers$marker,ingroup='Celltype',inlabel='out',inassay='RNA',slot = "data")
