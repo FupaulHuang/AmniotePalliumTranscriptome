@@ -554,3 +554,34 @@ pdf(paste0(label,'_UCell.pdf'),5,5)
 print(p1/p2)
 dev.off()
 }
+
+plot_venn <- function(data,artist,word,incolor,label='out',size=1){
+data[,'artist']=data[,artist]
+data[,'word']=data[,word]
+lname=as.vector(unique(data$artist))
+p1=venn.diagram(
+  x = list(
+    data %>% filter(artist==lname[1]) %>% select(word) %>% unlist() ,
+    data %>% filter(artist==lname[2]) %>% select(word) %>% unlist() ,
+    data %>% filter(artist==lname[3]) %>% select(word) %>% unlist()
+    ),
+  category.names = lname,output = FALSE,
+          filename=NULL,
+          lwd = 1,
+          col=incolor,
+          fill = c(alpha(incolor[1],0.3), alpha(incolor[2],0.3), alpha(incolor[3],0.3)),
+          cex = 0.5,
+          fontfamily = "sans",
+          cat.cex = 0.6,
+          cat.default.pos = "outer",
+          cat.pos = c(-27, 27, 135),
+          cat.dist = c(0.055, 0.055, 0.085),
+          cat.fontfamily = "sans",
+          cat.col = incolor,
+          rotation = 1
+        )
+pdf(paste0('venn_',label,'.pdf'),4,4)
+grid.draw(p1)
+dev.off()
+}
+

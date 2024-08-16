@@ -318,7 +318,8 @@ return(obj)
 
 
 
-run_corplot <- function(ob1,ob3,ig1=NULL,ig2=NULL,col1=NULL,col2=NULL,lab1=NULL,lab2=NULL,gene.list=NULL,assay1='Spatial',assay2='Spatial',deg=NULL,hvg=NULL,invert=NULL,assay=NULL){
+run_corplot <- function(ob1,ob3,ig1=NULL,ig2=NULL,col1=NULL,col2=NULL,lab1=NULL,lab2=NULL,gene.list=NULL,
+assay1='Spatial',assay2='Spatial',deg=NULL,hvg=NULL,invert=NULL,assay=NULL,shvg=NULL){
 
 DefaultAssay(ob1) <-assay1
 DefaultAssay(ob3) <-assay2   
@@ -369,7 +370,7 @@ gene.list1 <- unique(c(VariableFeatures(ob1),
 #gene.list1 <- intersect(VariableFeatures(ob1),VariableFeatures(ob3))
 c1=which(gene.list1 %in% gene.list)
 gene.list1=gene.list1[c1]
-if (!is.null(hvg)) {
+if (!is.null(shvg)) {
 gene.list1=gene.list1[1:len_list]
 }
 gene.list <- intersect(gene.list1,gene.list)
